@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { ServiceInterceptor } from '../providers/service'
 
 @Injectable()
 export class AuthenticationService {
-    constructor(private http: HttpClient, public service: ServiceInterceptor) { }
 
-    login(username: string, password: string) {
-        return this.http.post<any>(`${this.service.endpoint}/users/authenticate`, { username: username, password: password })
+    public endpoint = 'http://127.0.0.1/api/';
+
+    constructor(private http: HttpClient) { }
+
+    login(email: string, password: string) {
+        return this.http.post<any>(`${this.endpoint}login`, { email: email, password: password })
             .pipe(map(user => {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {

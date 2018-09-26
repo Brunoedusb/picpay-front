@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { first } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { first, tap } from 'rxjs/operators';
 
-import { User } from '../models/user';
 import { UserService } from '../providers/user.service';
+import { Router } from '@angular/router';
+import { MatPaginator } from '@angular/material';
 
 
 @Component({
@@ -11,27 +12,44 @@ import { UserService } from '../providers/user.service';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-  currentUser: User;
-  users: User[] = [];
 
-  constructor(private userService: UserService) {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  search: any;
+  users: any;
+  loading = false;
+  displayedColumns = ["id", "name", "username"];
+
+  constructor(
+    private userService: UserService,
+    private router: Router
+  ) {
   }
 
   ngOnInit() {
-    this.loadAllUsers();
-  }
+    this.loadAllUsers(1, '').then(()=>{
+      this.paginator.page
+          .pipe(
+              tap(() => {
+                this.loadAllUsers(this.paginator.pageIndex + 1, this.search)
+              })
+          )
+          .subscribe();
+    });
+  }  
 
-  deleteUser(id: number) {
-    this.userService.delete(id).pipe(first()).subscribe(() => {
-      this.loadAllUsers();
+  public loadAllUsers(page = 1, search) {
+    this.search = search;
+    this.users ? this.loading = true : '';
+    return new Promise((resolve)=>{
+      this.userService.getAll(page, search).pipe(first()).subscribe(users => {
+        this.loading = false;
+        this.users = users;
+        resolve();
+      });
     });
   }
 
-  private loadAllUsers() {
-    this.userService.getAll().pipe(first()).subscribe(users => {
-      this.users = users;
-    });
+  logout(){
+    this.router.navigate(['/login']);
   }
-
 }

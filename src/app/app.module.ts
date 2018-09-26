@@ -1,11 +1,9 @@
 import { AuthGuard } from './guards/auth.guard';
-import { AlertService } from './providers/alert.service';
 import { AuthenticationService } from './providers/authentication.service';
 import { UserService } from './providers/user.service';
 import { JwtInterceptor } from './providers/jwt.interceptor';
 import { ErrorInterceptor } from './providers/error.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { ServiceInterceptor } from './providers/service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -20,6 +18,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { RegisterComponent } from './register/register.component';
+import { NgMatSearchBarModule } from 'ng-mat-search-bar';
 
 @NgModule({
   declarations: [
@@ -35,18 +34,17 @@ import { RegisterComponent } from './register/register.component';
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgMatSearchBarModule
   ],
   providers: [
     MatSnackBar,
     AuthGuard,
-    AlertService,
     AuthenticationService,
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-
-    ServiceInterceptor
+    
   ],
   bootstrap: [AppComponent]
 })
