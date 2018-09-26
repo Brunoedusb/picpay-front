@@ -49,8 +49,8 @@ export class RegisterComponent implements OnInit {
         (data: any) => {
           // login successful if there's a jwt token in the response
           if (data && data.token) {
-              // store user details and jwt token in local storage to keep user logged in between page refreshes
-              localStorage.setItem('currentUser', JSON.stringify(data));
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            localStorage.setItem('currentUser', JSON.stringify(data));
           }
           this.snackBar.open('Registration successful', 'OK', {
             duration: 3000
@@ -65,7 +65,7 @@ export class RegisterComponent implements OnInit {
         });
   }
 
-  back(){
+  back() {
     this.router.navigate(['/login']);
   }
 }
